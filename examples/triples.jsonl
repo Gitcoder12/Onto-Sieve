@@ -1,0 +1,3 @@
+{"subject":"https://example.org/id/person-1","predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","object":{"kind":"iri","value":"https://example.org/vocab/Person"},"provenance":{"source":"https://example.org/source-a"}}
+{"subject":"https://example.org/id/person-1","predicate":"https://example.org/vocab/name","object":{"kind":"literal","value":"Ada Example","datatype":"http://www.w3.org/2001/XMLSchema#string"},"provenance":{"source":"https://example.org/source-a"}}
+{"subject":"https://example.org/id/person-2","predicate":"https://example.org/vocab/unknownProperty","object":{"kind":"literal","value":"unmapped"},"provenance":{"source":"https://example.org/source-b"}}
