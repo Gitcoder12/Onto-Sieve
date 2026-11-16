@@ -64,3 +64,7 @@ A quarantined record contains the original record, its input line number and one
 ## Data integrity
 
 The input is read-only. No source rows are silently repaired, dropped or overwritten. Review quarantine output before deciding whether to correct source data.
+
+## Working with coding agents
+
+Start with [`AGENTS.md`](AGENTS.md) for repository-wide invariants, architecture, commands and review rules. Use [`SKILLS.md`](SKILLS.md) to select a task-specific workflow. Canonical skills are stored in `.agents/skills/`; Claude Code discovery entries are stored in `.claude/skills/`. Read the relevant skill before changing domain logic. All agent output remains subject to human review; documentation and tests do not replace scientific, operational or safety validation.
