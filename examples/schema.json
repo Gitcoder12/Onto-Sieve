@@ -1,0 +1,9 @@
+{
+  "type_predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+  "properties": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": {"object_kind": "iri", "functional": false},
+    "https://example.org/vocab/name": {"object_kind": "literal", "datatype": "http://www.w3.org/2001/XMLSchema#string", "functional": true, "domains": ["https://example.org/vocab/Person"]},
+    "https://example.org/vocab/knows": {"object_kind": "iri", "functional": false, "domains": ["https://example.org/vocab/Person"]}
+  },
+  "required_by_type": {"https://example.org/vocab/Person": ["https://example.org/vocab/name"]}
+}
