@@ -158,7 +158,7 @@ def validate_records(lines: list[str], schema: dict[str, Any]) -> dict[str, Any]
                     quarantine_reasons[line_number].append("value_not_allowed")
             parsed.append(triple)
         except (json.JSONDecodeError, ValueError) as exc:
-            raw_by_line[line_number] = line.rstrip("\\n")
+            raw_by_line[line_number] = line.rstrip("\n")
             quarantine_reasons[line_number].append(f"invalid_record: {exc}")
 
     type_predicate = schema.get("type_predicate")
@@ -251,9 +251,9 @@ def main(argv: list[str] | None = None) -> int:
         schema = load_schema(args.schema)
         result = validate_records(args.input.read_text(encoding="utf-8").splitlines(), schema)
         output_rows = [
-            (args.accepted, "".join(json.dumps(row, ensure_ascii=False) + "\\n" for row in result["accepted"])),
-            (args.quarantine, "".join(json.dumps(row, ensure_ascii=False) + "\\n" for row in result["quarantined"])),
-            (args.report, json.dumps({key: value for key, value in result.items() if key not in {"accepted", "quarantined"}}, indent=2) + "\\n"),
+            (args.accepted, "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in result["accepted"])),
+            (args.quarantine, "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in result["quarantined"])),
+            (args.report, json.dumps({key: value for key, value in result.items() if key not in {"accepted", "quarantined"}}, indent=2) + "\n"),
         ]
         for path, content in output_rows:
             path.parent.mkdir(parents=True, exist_ok=True)
