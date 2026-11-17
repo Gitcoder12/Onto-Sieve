@@ -1,0 +1,24 @@
+[
+  {
+    "id": "example-confidence-001",
+    "subject": "ex:system-a",
+    "predicate": "ex:confidence",
+    "object": 0.92,
+    "object_type": "literal",
+    "provenance": {
+      "source_url": "https://example.org/evidence/record-1",
+      "extracted_at": "2026-11-17T12:00:00Z"
+    }
+  },
+  {
+    "id": "example-unknown-predicate-002",
+    "subject": "ex:system-a",
+    "predicate": "ex:inventedProperty",
+    "object": "unverified",
+    "object_type": "literal",
+    "provenance": {
+      "source_url": "https://example.org/evidence/record-2",
+      "extracted_at": "2026-11-17T12:00:00Z"
+    }
+  }
+]

@@ -1,19 +1,46 @@
 # Onto-Sieve
-Validate + Quarantine bad triples for ontology-grounded agents.
 
----
+Validate and quarantine malformed, unsupported or insufficiently sourced triple records before they enter an ontology-grounded agent's memory or evidence store.
 
-## Engineering Audit & Handover — 2026-11-17
+## Runnable MVP
 
-**Reviewed commit:** `757052405c849ad0cd82faa9c7c384474e57ffa3` (`main`).
+This first implementation accepts a strict JSON array of triple records. It is **not yet an RDF/Turtle/OWL parser or SHACL engine**. It validates subject/object identifiers, allow-listed predicates, object types and datatypes, and source provenance.
 
-### Confirmed findings
-- The reviewed branch contains only `README.md`; no executable ontology parser, triple validator, quarantine store, or automated tests were found.
-- The stated validation/quarantine behavior for ontology-grounded agents is not demonstrated by code on this branch.
+Install with `python -m pip install -e .[dev]`.
 
-### Next actions
-1. Define supported RDF/OWL formats, ontology constraints, and validation error taxonomy.
-2. Implement a minimal parser/validator with a reversible quarantine record and provenance.
-3. Add tests for malformed triples, schema violations, namespace handling, and safe release from quarantine.
+Validate a file:
 
-**Verification status:** source-tree inspection only; no runnable product or test suite verified.
+```bash
+onto-sieve validate examples/triples.json --schema config/ontology.json --quarantine quarantine.json
+```
+
+Release a record only after an explicit human review:
+
+```bash
+onto-sieve release t-bad --quarantine quarantine.json --accepted accepted.jsonl --corrected-json corrected-triple.json --reviewer "reviewer-id" --note "Source checked and predicate corrected"
+```
+
+Quarantine preserves the original record and validation reasons. Release re-validates a corrected JSON record against the ontology contract, requires its ID to match the quarantined ID, appends the validated correction plus original record and reviewer note, and retains the quarantine history. An invalid correction cannot be released.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  A[Source triple records] --> B[Namespace + predicate validation]
+  B -->|valid| C[Accepted records]
+  B -->|invalid / unknown| D[Quarantine with original + reasons]
+  D --> E[Human review]
+  E -->|approved| F[Append-only release event]
+  E -->|rejected| G[Remain quarantined]
+```
+
+Run tests using `pytest -q`.
+
+## Next
+
+- RDF/Turtle and JSON-LD parsing through explicit adapters.
+- SHACL validation with named shapes.
+- Provenance signatures and reviewer identity integration.
+- Versioned ontology migration and reversible quarantine release.
+
+Do not treat a syntactically valid triple as a true statement. Source quality and truth require separate evaluation.
