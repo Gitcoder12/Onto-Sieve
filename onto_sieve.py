@@ -209,13 +209,24 @@ def release_quarantined(
     quarantine_path: Path,
     *,
     record_id: str,
+    corrected_record: dict[str, Any],
+    schema_path: Path = DEFAULT_SCHEMA,
     reviewer: str,
     accepted_path: Path,
     note: str,
 ) -> dict[str, Any]:
-    """Release one quarantined record after explicit human review."""
+    """Release only a corrected record that passes the schema after human review."""
     if not reviewer.strip() or not note.strip():
         raise ValueError("reviewer and review note are required")
+    if not isinstance(corrected_record, dict):
+        raise ValueError("corrected_record must be a JSON object")
+    corrected_errors = validate_triple(corrected_record, load_schema(schema_path))
+    if corrected_errors:
+        raise ValueError(
+            "corrected record still fails validation: " + ", ".join(corrected_errors)
+        )
+    if corrected_record.get("id") != record_id:
+        raise ValueError("corrected record id must match the quarantined record id")
     store = json.loads(quarantine_path.read_text(encoding="utf-8"))
     if not isinstance(store, list):
         raise ValueError("quarantine file must contain a JSON array")
@@ -231,7 +242,8 @@ def release_quarantined(
     if match is None:
         raise ValueError(f"no quarantined record found for id {record_id!r}")
     event = {
-        "record": match["original"],
+        "record": corrected_record,
+        "original_quarantined_record": match["original"],
         "release_review": {
             "reviewer": reviewer.strip(),
             "note": note.strip(),
@@ -264,6 +276,8 @@ def main(argv: list[str] | None = None) -> int:
     release.add_argument("--accepted", type=Path, default=Path("accepted.jsonl"))
     release.add_argument("--reviewer", required=True)
     release.add_argument("--note", required=True)
+    release.add_argument("--corrected-json", type=Path, required=True)
+    release.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     args = parser.parse_args(argv)
     try:
         if args.command == "validate":
@@ -271,9 +285,12 @@ def main(argv: list[str] | None = None) -> int:
                 args.input, schema_path=args.schema, quarantine_path=args.quarantine
             )
         else:
+            corrected_record = json.loads(args.corrected_json.read_text(encoding="utf-8"))
             result = release_quarantined(
                 args.quarantine,
                 record_id=args.record_id,
+                corrected_record=corrected_record,
+                schema_path=args.schema,
                 reviewer=args.reviewer,
                 accepted_path=args.accepted,
                 note=args.note,
