@@ -132,7 +132,7 @@ def test_quarantine_release_requires_human_reviewer_and_note(tmp_path):
 def test_cli_schema_defaults_reject_missing_input(tmp_path):
     schema_path = tmp_path / "schema.json"
     schema_path.write_text(json.dumps({"schema_version": "wrong"}), encoding="utf-8")
-    with pytest.raises(ValueError, match="schema_version"):
+    with pytest.raises(ValueError, match="ontology schema"):
         load_schema(schema_path)
 
 
