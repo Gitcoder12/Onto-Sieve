@@ -17,10 +17,10 @@ onto-sieve validate examples/triples.json --schema config/ontology.json --quaran
 Release a record only after an explicit human review:
 
 ```bash
-onto-sieve release t-bad --quarantine quarantine.json --accepted accepted.jsonl --reviewer "reviewer-id" --note "Source checked and predicate corrected"
+onto-sieve release t-bad --quarantine quarantine.json --accepted accepted.jsonl --corrected-json corrected-triple.json --reviewer "reviewer-id" --note "Source checked and predicate corrected"
 ```
 
-Quarantine preserves the original record and validation reasons. Release appends an audit record; it does not erase the quarantine history.
+Quarantine preserves the original record and validation reasons. Release re-validates a corrected JSON record against the ontology contract, requires its ID to match the quarantined ID, appends the validated correction plus original record and reviewer note, and retains the quarantine history. An invalid correction cannot be released.
 
 ## Architecture
 
