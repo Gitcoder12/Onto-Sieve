@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "format": "onto-sieve-json-triples-v1",
+  "description": "Explicit predicate contract for evidence and agent-memory statements.",
+  "namespaces": {
+    "ex": "https://example.org/ontology/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "predicates": {
+    "rdf:type": {"object_type": "iri"},
+    "rdfs:label": {"object_type": "literal", "datatype": "xsd:string"},
+    "ex:confidence": {"object_type": "literal", "datatype": "xsd:decimal"},
+    "ex:sourceReference": {"object_type": "iri"},
+    "ex:reviewStatus": {"object_type": "literal", "datatype": "xsd:string"}
+  }
+}
