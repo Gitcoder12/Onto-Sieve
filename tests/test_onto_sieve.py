@@ -104,18 +104,26 @@ def test_quarantine_release_requires_human_reviewer_and_note(tmp_path):
 
     with pytest.raises(ValueError, match="reviewer and review note"):
         release_quarantined(
-            quarantine, record_id="t-bad", reviewer="", accepted_path=accepted, note=""
+            quarantine,
+        record_id="t-bad",
+        corrected_record=triple(id="t-bad", predicate="ex:bad"),
+        reviewer="",
+        accepted_path=accepted,
+        note="",
         )
 
     event = release_quarantined(
         quarantine,
         record_id="t-bad",
+        corrected_record=triple(id="t-bad", object=0.5),
         reviewer="human-reviewer",
         accepted_path=accepted,
         note="Checked source and corrected the ontology mapping.",
     )
 
     assert event["release_review"]["decision"] == "released_by_human"
+    assert event["record"]["predicate"] == "ex:confidence"
+    assert event["original_quarantined_record"]["predicate"] == "ex:bad"
     assert accepted.exists()
     saved = json.loads(quarantine.read_text(encoding="utf-8"))
     assert saved[0]["status"] == "released_by_human"
@@ -126,3 +134,36 @@ def test_cli_schema_defaults_reject_missing_input(tmp_path):
     schema_path.write_text(json.dumps({"schema_version": "wrong"}), encoding="utf-8")
     with pytest.raises(ValueError, match="schema_version"):
         load_schema(schema_path)
+
+
+
+def test_invalid_corrected_record_cannot_leave_quarantine(tmp_path):
+    quarantine = tmp_path / "quarantine.json"
+    accepted = tmp_path / "accepted.jsonl"
+    quarantine.write_text(
+        json.dumps(
+            [
+                {
+                    "record_id": "t-bad",
+                    "original": triple(id="t-bad", predicate="ex:bad"),
+                    "status": "quarantined",
+                    "reasons": ["predicate_not_allowed"],
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="still fails validation"):
+        release_quarantined(
+            quarantine,
+            record_id="t-bad",
+            corrected_record=triple(id="t-bad", predicate="ex:bad"),
+            reviewer="human-reviewer",
+            accepted_path=accepted,
+            note="Reviewed.",
+        )
+
+    saved = json.loads(quarantine.read_text(encoding="utf-8"))
+    assert saved[0]["status"] == "quarantined"
+    assert not accepted.exists()
