@@ -44,3 +44,10 @@ Run tests using `pytest -q`.
 - Versioned ontology migration and reversible quarantine release.
 
 Do not treat a syntactically valid triple as a true statement. Source quality and truth require separate evaluation.
+
+---
+
+## Examples Used
+- Validating a person-to-organization knowledge-graph triple
+- Quarantining a record with an unsupported predicate
+- Releasing a corrected triple after human source review
