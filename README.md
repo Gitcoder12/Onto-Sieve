@@ -44,3 +44,21 @@ Run tests using `pytest -q`.
 - Versioned ontology migration and reversible quarantine release.
 
 Do not treat a syntactically valid triple as a true statement. Source quality and truth require separate evaluation.
+
+
+---
+
+## Branch Activity & Development History
+
+**Audit date:** 2026-11-18 · **Comparison base:** `main`
+
+| Branch | Difference from `main` | Observed work / changed paths |
+|---|---:|---|
+| `feat/jsonl-triple-validation-mvp-20261116` | 21 ahead / 4 behind | JSONL triple validator, schema/triple examples, provenance/quarantine and RDF review skills, agent guidance and tests |
+| `feat/triple-validation-quarantine` | 11 / 1 | Triple validation/quarantine implementation, ontology config, examples, CI/package config and tests |
+
+### Open pull requests observed during this audit
+
+- [PR #1 — triple validation MVP](https://github.com/Gitcoder12/Onto-Sieve/pull/1)
+
+**Review note:** Compare the two overlapping validation branches before selecting one. Verify malformed JSONL handling, provenance preservation, quarantine behavior and tests on the exact PR head. No branches have been merged or deleted by this documentation update.
